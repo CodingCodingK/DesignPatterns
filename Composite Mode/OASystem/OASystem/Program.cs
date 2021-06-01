@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace OASystem
 {
+	// treeView Construt
 	class Program
 	{
 		static void Main(string[] args)
@@ -14,32 +15,26 @@ namespace OASystem
 			Console.OutputEncoding = Encoding.GetEncoding(936);
 			#endregion
 
-			Composite root = new Composite("root");
-			root.Add(new Leaf("Leaf 1"));
-			root.Add(new Leaf("Leaf 2"));
+			ConcreteCompany root = new ConcreteCompany("上海总公司");
+			root.Add(new HRDepartment("总公司人力资源部"));
+			root.Add(new TechDepartment("总公司技术部"));
 
-			Composite comp = new Composite("Composite A");
-			comp.Add(new Leaf("Leaf A1"));
-			comp.Add(new Leaf("Leaf A2"));
+			ConcreteCompany comp1 = new ConcreteCompany("广东办事处");
+			comp1.Add(new HRDepartment("广东办事处人力资源部"));
+			comp1.Add(new TechDepartment("广东办事处技术部"));
+			root.Add(comp1);
 
-			// 树枝A插入
-			root.Add(comp);
-
-			Component comp2 = new Composite("Composite B");
-			comp2.Add(new Leaf("Leaf B1"));
-			comp2.Add(new Leaf("Leaf B2"));
-
-			// 树枝B插入
+			ConcreteCompany comp2 = new ConcreteCompany("东京分公司");
+			comp2.Add(new HRDepartment("东京分公司人力资源部"));
+			comp2.Add(new TechDepartment("东京分公司技术部"));
 			root.Add(comp2);
 
-			root.Add(new Leaf("Leaf 3"));
-
-			// 树叶先插后剪
-			Leaf leaf = new Leaf("Leaf 4");
-			root.Add(leaf);
-			root.Remove(leaf);
-
+			Console.WriteLine("结构图");
 			root.Display(1);
+
+			Console.WriteLine();
+			Console.WriteLine("职责一览");
+			root.LineOfDuty();
 
 			#region Test Wait
 			Console.Read();
@@ -47,56 +42,80 @@ namespace OASystem
 		}
 	}
 
-	public abstract class Component
+	public abstract class Company
 	{
 		protected string name;
 
-		public Component(string n)
+		public Company(string n)
 		{
 			name = n;
 		}
 
-		public abstract void Add(Component c);
-		public abstract void Remove(Component c);
+		public abstract void Add(Company c);
+		public abstract void Remove(Company c);
 		public abstract void Display(int depth);
+		public abstract void LineOfDuty();
 	}
 
-	public class Leaf : Component
+	// Leaf 1
+	public class HRDepartment : Company
 	{
-		public Leaf(string n) : base(n)
+		public HRDepartment(string n) : base(n)
 		{
 		}
 
-		public override void Add(Component c)
-		{
-			Console.WriteLine("Cannot add to a leaf");
-		}
+		public override void Add(Company c) { }
 
-		public override void Remove(Component c)
-		{
-			Console.WriteLine("Cannot remove from a leaf");
-		}
+		public override void Remove(Company c) { }
 
 		public override void Display(int depth)
 		{
-			Console.WriteLine(new string('-',depth) + name);
+			Console.WriteLine(new string('-', depth) + name);
+		}
+
+		public override void LineOfDuty()
+		{
+			Console.WriteLine("{0} 员工招聘培训管理",name);
 		}
 	}
 
-	public class Composite : Component
+	// Leaf 2
+	public class TechDepartment : Company
 	{
-		private List<Component> children = new List<Component>();
-
-		public Composite(string n) : base(n)
+		public TechDepartment(string n) : base(n)
 		{
 		}
 
-		public override void Add(Component c)
+		public override void Add(Company c) { }
+
+		public override void Remove(Company c) { }
+
+		public override void Display(int depth)
+		{
+			Console.WriteLine(new string('-', depth) + name);
+		}
+
+		public override void LineOfDuty()
+		{
+			Console.WriteLine("{0} 就一修电脑的", name);
+		}
+	}
+
+	// Concrete(Instance)
+	public class ConcreteCompany : Company
+	{
+		private List<Company> children = new List<Company>();
+
+		public ConcreteCompany(string n) : base(n)
+		{
+		}
+
+		public override void Add(Company c)
 		{
 			children.Add(c);
 		}
 
-		public override void Remove(Component c)
+		public override void Remove(Company c)
 		{
 			children.Remove(c);
 		}
@@ -108,6 +127,14 @@ namespace OASystem
 			foreach (var component in children)
 			{
 				component.Display(depth + 2);
+			}
+		}
+
+		public override void LineOfDuty()
+		{
+			foreach (var child in children)
+			{
+				child.LineOfDuty();
 			}
 		}
 	}
