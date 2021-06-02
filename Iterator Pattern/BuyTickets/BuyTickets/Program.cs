@@ -12,6 +12,19 @@ namespace BuyTickets
 	// {
 	//	  do sth
 	// }
+
+	//public interface IEnumerator
+	//{
+	//	object Current { get; }
+	//	bool MoveNext();
+	//	void Reset();
+	//}
+
+	//public interface IEnumerable
+	//{
+	//	IEnumerator GetEnumerator();
+	//}
+
 	class Program
 	{
 		static void Main(string[] args)
