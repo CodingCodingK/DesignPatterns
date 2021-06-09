@@ -1,0 +1,4 @@
+虚拟机
+1.修改hardware面板的newwork adapter为复制物理网络状态
+2.编辑-虚拟网络设置面板里，修改虚拟机的localhost的ip为统一ip
+3.连接
